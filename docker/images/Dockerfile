@@ -2,15 +2,13 @@ FROM node:22-alpine AS builder
 
 RUN apk add --no-cache python3 make g++ git openssh
 
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
-
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json package-lock.json* ./
 COPY packages ./packages
 
-RUN pnpm install --frozen-lockfile
-RUN pnpm build
+RUN npm ci
+RUN npm run build
 
 FROM node:22-alpine
 
