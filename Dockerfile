@@ -6,8 +6,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages ./packages
+COPY . .
 
 RUN pnpm install --frozen-lockfile
 RUN pnpm build
@@ -25,14 +24,11 @@ RUN apk add --no-cache \
     ca-certificates \
     libc6-compat
 
-RUN npm install -g full-icu@1.5.0
-
 WORKDIR /home/node
 
 COPY --from=builder /app /home/node
 
 ENV NODE_ENV=production \
-    NODE_ICU_DATA=/usr/local/lib/node_modules/full-icu \
     N8N_PORT=5678
 
 EXPOSE 5678
